@@ -45,12 +45,9 @@ RUN make deps \
     && make generate \
     && make
 
-## manage files, directories and permissions
-ADD conf_files/ /config
-
 ## expose ports
 EXPOSE 5001
 
 ## run service
 ENTRYPOINT ["./auth_server"]
-CMD ["/config/config.yml"]
+CMD ["/etc/infunity/auth/config.yml"]

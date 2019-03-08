@@ -21,4 +21,3 @@ acl:
   - match: {account: "user"}
     actions: ["pull"]
     comment: "User \"user\" can pull stuff."
-  # Access is denied by default.

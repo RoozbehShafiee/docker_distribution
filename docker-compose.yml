@@ -1,0 +1,42 @@
+version: "3"
+
+networks:
+  registry:
+    driver: bridge
+
+services:
+  registry:
+    build: ./registry
+    image: "registry:20190117"
+    container_name: registry
+    hostname: registry
+    restart: always
+    ports:
+      - 5000:5000
+    volumes:
+      - registry:/data
+      - ./conf/registry.yml:/etc/docker/registry/config.yml
+      - ./conf/certificate.pem:/etc/docker/registry/ssl/certificate.pem
+    links:
+      - auth
+    networks:
+      - registry
+
+  auth:
+    build: ./authentication
+    image: "auth:20190117"
+    container_name: auth
+    hostname: auth
+    restart: always
+    ports:
+      - 5001:5001
+    volumes:
+      - ./conf/auth.yml:/etc/infunity/auth/config.yml
+      - ./conf/certificate.pem:/etc/infunity/ssl/certificate.pem
+      - ./conf/private.key:/etc/infunity/ssl/private.key
+    networks:
+      - registry
+
+volumes:
+  registry:
+  elasticsearch_logs:

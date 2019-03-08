@@ -1,0 +1,17 @@
+version: 0.1
+loglevel: debug
+storage:
+  filesystem:
+    rootdirectory: /data
+  delete:
+    enabled: true
+
+http:
+  addr: :5000
+
+auth:
+  token:
+    realm: https://auth:5001
+    service: infunity.io:8443
+    issuer: "ACME auth server - aa8AhshuoCh5eade"
+    rootcertbundle: /etc/docker/registry/ssl/certificate.pem

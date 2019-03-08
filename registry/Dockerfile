@@ -14,7 +14,7 @@ ENV GOVERSION 1.10.3
 ENV GOROOT /usr/local/go
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
-
+ENV REGISTRY_DATA /data
 ARG GOOS=linux
 ARG GOARCH=amd64
 
@@ -35,7 +35,8 @@ RUN wget https://dl.google.com/go/go$GOVERSION.linux-amd64.tar.gz \
     && mkdir -p $DISTRIBUTION_DIR \
     && git clone https://github.com/docker/distribution.git $DISTRIBUTION_DIR \
     && mkdir -p /etc/docker/registry \
-    && mv $DISTRIBUTION_DIR/cmd/registry/config-dev.yml /etc/docker/registry/config.yml
+    && mv $DISTRIBUTION_DIR/cmd/registry/config-dev.yml /etc/docker/registry/config.yml \
+    && mkdir -p $REGISTRY_DATA
 
 ## working directory
 WORKDIR $DISTRIBUTION_DIR
@@ -44,7 +45,7 @@ WORKDIR $DISTRIBUTION_DIR
 RUN make PREFIX=/go clean binaries
 
 ## defining volumes
-VOLUME ["/var/lib/registry"]
+VOLUME ["/data"]
 
 ## expose ports
 EXPOSE 5000
