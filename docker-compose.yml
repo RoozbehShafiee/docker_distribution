@@ -1,0 +1,39 @@
+version: "3"
+
+networks:
+  registry:
+    driver: bridge
+
+services:
+  registry:
+    image: "registry:2"
+    container_name: registry
+    hostname: registry
+    restart: always
+    ports:
+      - 443:5000
+    volumes:
+      - registry:/data
+      - ./conf/ssl:/etc/docker/registry/ssl
+      - ./conf/registry.yml:/etc/docker/registry/config.yml
+    links:
+      - auth
+    networks:
+      - registry
+
+  auth:
+    build: ./auth_server
+    image: "auth_server:20190309"
+    container_name: auth_server
+    hostname: auth_server
+    restart: always
+    ports:
+      - 8443:5001
+    volumes:
+      - ./conf/auth.yml:/auth_server/auth.yml
+      - ./conf/ssl:/auth_server/ssl
+    networks:
+      - registry
+
+volumes:
+  registry:

@@ -1,0 +1,17 @@
+version: 0.1
+loglevel: debug
+storage:
+  filesystem:
+    rootdirectory: /data
+  delete:
+    enabled: true
+
+http:
+  addr: :5000
+
+auth:
+  token:
+    realm: https://roozbeh.cloud:5001/auth
+    service: roozbeh.cloud:5000
+    issuer: "Acme auth server"
+    rootcertbundle: /etc/docker/registry/ssl/certificate.crt

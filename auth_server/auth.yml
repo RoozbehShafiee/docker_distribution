@@ -1,16 +1,7 @@
-# A simple example. See reference.yml for explanation for explanation of all options.
-#
-# auth:
-#  token:
-#    realm: "https://127.0.0.1:5001/auth"
-#    service: "Docker registry"
-#    issuer: "Acme auth server"
-#    rootcertbundle: "/path/to/server.pem"
-
 server:
   addr: ":5001"
-  certificate: "/config/certificate.crt"
-  key: "/config/private.key"
+  certificate: "/auth_server/ssl/certificate.crt"
+  key: "/auth_server/ssl/certificate.key"
 
 token:
   issuer: "Acme auth server"  # Must match issuer in the Registry config.
