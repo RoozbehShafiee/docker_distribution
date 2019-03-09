@@ -11,7 +11,7 @@ http:
 
 auth:
   token:
-    realm: https://roozbeh.cloud:5001
+    realm: https://roozbeh.cloud:5001/auth
     service: roozbeh.cloud:5000
-    issuer: "Roozbeh Cloud"
-    rootcertbundle: /etc/docker/registry/ssl/certificate.pem
+    issuer: "Acme auth server"
+    rootcertbundle: /etc/docker/registry/ssl/certificate.crt
