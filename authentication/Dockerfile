@@ -1,54 +1,56 @@
-FROM ubuntu:18.04
+## build build image
+FROM golang:alpine AS build
 
 ## label and credits
-LABEL image="Dockerized Docker Distribution - Authentication Server Docker Image" \
-      maintainer="Roozbeh Shafiee, me@roozbeh.cloud" \
-      version="1.0.0-production" \
-      released="September 20th, 2018" \
-      reference="https://roozbeh.cloud, https://github.com/RoozbehShafiee"
+LABEL cloud.roozbeh.image.vendor="Roozbeh Cloud" \
+      cloud.roozbeh.image.authors="Roozbeh Shafiee" \
+      cloud.roozbeh.image.title="Docker Authentication Server" \
+      cloud.roozbeh.image.description="A Docker Image For auth_server Project" \
+      cloud.roozbeh.image.created="2019-03.09" \
+      cloud.roozbeh.image.version="0.1-beta" \
+      cloud.roozbeh.image.licenses="Apache 2.0" \
+      cloud.roozbeh.image.url="https://roozbeh.cloud"
+      cloud.roozbeh.image.documentation="https://github.com/RoozbehShafiee/docker_distribution/README.md"
+      cloud.roozbeh.image.source="https://github.com/RoozbehShafiee/docker_distribution"
 
 ## environment variables
-ENV DOCKER_AUTH_DIR /go/src/github.com/cesanta/docker_auth
-ENV GOVERSION 1.10.3
-ENV GOROOT /usr/local/go
-ENV GOPATH /go
-ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
-
-ARG GOOS=linux
-ARG GOARCH=amd64
+ENV DOCKER_AUTH_DIR /usr/local/go/src/github.com/cesanta/docker_auth
 
 ## manage packages and repositories
-RUN apt-get update \
-    && apt-get -y dist-upgrade \
-    && apt-get -y install \
-                  ca-certificates \
-                  python-pip \
-                  make \
-                  git \
-                  wget \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /var/cache/apt/archives/* \
+RUN apk update \
+    && apk add --no-cache \
+          ca-certificates \
+          py2-pip \
+          make \
+          git \
+          wget \
     && pip install gitpython
 
-## install golang and authentication server requirements
-RUN wget https://dl.google.com/go/go$GOVERSION.linux-amd64.tar.gz \
-    && tar -C /usr/local -xzf go$GOVERSION.linux-amd64.tar.gz \
-    && rm go$GOVERSION.linux-amd64.tar.gz \
-    && mkdir -p $DOCKER_AUTH_DIR \
+## pull auth_server project from Github
+RUN mkdir -p $DOCKER_AUTH_DIR \
     && git clone https://github.com/cesanta/docker_auth.git $DOCKER_AUTH_DIR
 
 ## working directory
 WORKDIR $DOCKER_AUTH_DIR/auth_server
 
-## compiling docker registry
+## compile docker auth server
 RUN make deps \
     && make generate \
     && make
 
-## manage files, directories and permissions
+## build final image
+FROM alpine:latest
+
+## environment variables
+ENV DOCKER_AUTH_DIR /usr/local/go/src/github.com/cesanta/docker_auth
+
+## copy built binary file
+COPY --from=build $DOCKER_AUTH_DIR/auth_server/auth_server /auth_server
+
+## add config file
 ADD conf_files/ /config
 
-## expose ports
+## expose port
 EXPOSE 5001
 
 ## run service
