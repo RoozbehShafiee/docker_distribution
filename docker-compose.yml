@@ -14,6 +14,7 @@ services:
       - 5000:5000
     volumes:
       - registry:/data
+      - ./conf/ssl:/etc/docker/registry/ssl
     links:
       - auth
     networks:
@@ -28,7 +29,8 @@ services:
     ports:
       - 5001:5001
     volumes:
-      - ./conf/auth.yml:/etc/infunity/auth/config.yml
+      - ./conf/auth.yml:/auth_server/auth.yml
+      - ./conf/ssl:/auth_server/ssl
     networks:
       - registry
 

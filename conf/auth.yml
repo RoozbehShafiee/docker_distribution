@@ -9,8 +9,8 @@
 
 server:
   addr: ":5001"
-  certificate: "/config/certificate.crt"
-  key: "/config/private.key"
+  certificate: "/auth_server/ssl/certificate.crt"
+  key: "/auth_server/ssl/private.key"
 
 token:
   issuer: "Acme auth server"  # Must match issuer in the Registry config.

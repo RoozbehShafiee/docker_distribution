@@ -11,7 +11,7 @@ http:
 
 auth:
   token:
-    realm: https://auth:5001
-    service: infunity.io:8443
-    issuer: "ACME auth server - aa8AhshuoCh5eade"
+    realm: https://roozbeh.cloud:5001
+    service: roozbeh.cloud:5000
+    issuer: "Roozbeh Cloud"
     rootcertbundle: /etc/docker/registry/ssl/certificate.pem
