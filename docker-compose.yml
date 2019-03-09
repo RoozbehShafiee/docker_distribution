@@ -1,0 +1,36 @@
+version: "3"
+
+networks:
+  registry:
+    driver: bridge
+
+services:
+  registry:
+    image: "registry:2"
+    container_name: registry
+    hostname: registry
+    restart: always
+    ports:
+      - 5000:5000
+    volumes:
+      - registry:/data
+    links:
+      - auth
+    networks:
+      - registry
+
+  auth:
+    build: ./auth_server
+    image: "auth:20190309"
+    container_name: auth
+    hostname: auth
+    restart: always
+    ports:
+      - 5001:5001
+    volumes:
+      - ./conf/auth.yml:/etc/infunity/auth/config.yml
+    networks:
+      - registry
+
+volumes:
+  registry:
