@@ -3,37 +3,58 @@ version: "3"
 networks:
   registry:
     driver: bridge
-
 services:
+  traefik:
+    image: traefik:alpine
+    container_name: traefik
+    hostname: traefik
+    restart: unless-stopped
+    volumes:
+      - ./conf/traefik/traefik.toml:/etc/traefik/traefik.toml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme_certs:/etc/traefik/acme
+    ports:
+      - "80:80"
+      - "443:443"
+      - :8080:8080"
+    labels:
+      - "traefik.frontend.rule=Host:traefik.example.tld"
+      - "traefik.frontend.headers.SSLRedirect=true"
+      - "traefik.port=8080"
+  certdumper:
+    build: ./certdumper
+    image: "certdumper:20190309"
+    container_name: certdumper
+    hostname: certdumper
+    restart: unless-stopped
+    volumes:
+      - acme_certs:/etc/traefik/acme
   registry:
-    image: "registry:2"
+    image: registry:2
     container_name: registry
     hostname: registry
-    restart: always
-    ports:
-      - 443:5000
+    restart: unless-stopped
     volumes:
-      - registry:/data
-      - ./conf/ssl:/etc/docker/registry/ssl
-      - ./conf/registry.yml:/etc/docker/registry/config.yml
-    links:
-      - auth
-    networks:
-      - registry
-
-  auth:
+      - registry:/var/lib/registry
+      - acme_certs:/etc/docker/registry/ssl
+      - ./conf/registry/config.yml:/etc/docker/registry/config.yml
+    labels:
+      - "traefik.frontend.rule=Host:registry.example.tld"
+      - "traefik.port=5000"
+      - "traefik.enable=true"
+  auth_server:
     build: ./auth_server
     image: "auth_server:20190309"
     container_name: auth_server
     hostname: auth_server
-    restart: always
-    ports:
-      - 8443:5001
+    restart: unless-stopped
     volumes:
-      - ./conf/auth.yml:/auth_server/auth.yml
-      - ./conf/ssl:/auth_server/ssl
-    networks:
-      - registry
-
+      - acme_certs:/etc/auth_server/ssl/
+      - ./conf/auth_server/auth.yml:/auth_server/auth.yml
+    labels:
+      - "traefik.frontend.rule=Host:auth.registry.example.tld"
+      - "traefik.port=5001"
+      - "traefik.enable=true"
 volumes:
+  acme_certs:
   registry:

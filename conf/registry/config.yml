@@ -1,0 +1,17 @@
+version: 0.1
+loglevel: debug
+storage:
+  filesystem:
+    rootdirectory: /var/lib/registry
+  delete:
+    enabled: true
+
+http:
+  addr: :5000
+
+auth:
+  token:
+    realm: https://auth.registry.example.tld/auth
+    service: registry.example.tld:5000
+    issuer: "ACME Auth Server"
+    rootcertbundle: /etc/docker/registry/ssl/certs/auth.example.tld.crt

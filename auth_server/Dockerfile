@@ -2,16 +2,16 @@
 FROM golang:alpine AS build
 
 ## label and credits
-LABEL cloud.roozbeh.image.vendor="Roozbeh Cloud" \
-      cloud.roozbeh.image.authors="Roozbeh Shafiee" \
-      cloud.roozbeh.image.title="Docker Authentication Server" \
-      cloud.roozbeh.image.description="A Docker Image For auth_server Project" \
-      cloud.roozbeh.image.created="2019-03.09" \
-      cloud.roozbeh.image.version="0.1-beta" \
-      cloud.roozbeh.image.licenses="Apache 2.0" \
-      cloud.roozbeh.image.url="https://roozbeh.cloud" \
-      cloud.roozbeh.image.documentation="https://github.com/RoozbehShafiee/docker_distribution/README.md" \
-      cloud.roozbeh.image.source="https://github.com/RoozbehShafiee/docker_distribution"
+LABEL io.infunity.image.vendor="Infunity Cloud" \
+      io.infunity.image.authors="Roozbeh Shafiee" \
+      io.infunity.image.title="Docker Authentication Server" \
+      io.infunity.image.description="A Docker Image For auth_server Project" \
+      io.infunity.image.created="2019-03.09" \
+      io.infunity.image.version="0.1-beta" \
+      io.infunity.image.licenses="Apache 2.0" \
+      io.infunity.image.url="https://infunity.io" \
+      io.infunity.image.documentation="https://github.com/RoozbehShafiee/docker_distribution/README.md" \
+      io.infunity.image.source="https://github.com/RoozbehShafiee/docker_distribution"
 
 ## environment variables
 ENV DOCKER_AUTH_DIR /usr/local/go/src/github.com/cesanta/docker_auth
@@ -45,12 +45,11 @@ FROM alpine:latest
 ENV DOCKER_AUTH_DIR /usr/local/go/src/github.com/cesanta/docker_auth
 
 ## copy built binary file
-COPY --from=build $DOCKER_AUTH_DIR/auth_server/auth_server /auth_server/auth_server
-# COPY ./auth.yml /auth_server/auth.yml
+COPY --from=build $DOCKER_AUTH_DIR/auth_server/auth_server /usr/local/bin/auth_server
 
 ## expose port
 EXPOSE 5001
 
 ## run service
-ENTRYPOINT ["/auth_server/auth_server"]
-CMD ["/auth_server/auth.yml"]
+ENTRYPOINT ["auth_server"]
+CMD ["/etc/auth_server/auth.yml"]
