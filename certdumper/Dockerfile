@@ -23,9 +23,8 @@ RUN apk update \
 
 ## managing files and directories
 ADD dumpcerts.sh /dumpcerts.sh
-ADD inotify.sh /inotify.sh
-RUN chmod +x /*.sh \
-    && bash /dumpcerts.sh /etc/traefik/acme/acme.json /etc/traefik/acme
+ADD entrypoint.sh /entrypoint.sh
+RUN chmod +x /*.sh
 
 ## Run certdumper service
-CMD ["bash", "/inotify.sh"]
+CMD ["bash", "/entrypoint.sh"]
