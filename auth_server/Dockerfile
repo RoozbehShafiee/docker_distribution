@@ -45,14 +45,11 @@ FROM alpine:latest
 ENV DOCKER_AUTH_DIR /usr/local/go/src/github.com/cesanta/docker_auth
 
 ## copy built binary file
-COPY --from=build $DOCKER_AUTH_DIR/auth_server/auth_server /auth_server
-
-## add config file
-ADD conf_files/ /config
+COPY --from=build $DOCKER_AUTH_DIR/auth_server/auth_server /auth_server/auth_server
 
 ## expose port
 EXPOSE 5001
 
 ## run service
 ENTRYPOINT ["./auth_server"]
-CMD ["/config/config.yml"]
+CMD ["/auth_server/auth.yml"]
