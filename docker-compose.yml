@@ -33,8 +33,6 @@ services:
       - "traefik.frontend.rule=Host:example.tld"
       - "traefik.frontend.headers.SSLRedirect=true"
       - "traefik.port=8080"
-    depends_on:
-      - certdumper
   auth_server:
     build: ./auth_server
     image: "auth_server:20190309"
