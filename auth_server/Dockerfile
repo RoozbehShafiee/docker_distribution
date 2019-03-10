@@ -46,12 +46,9 @@ ENV DOCKER_AUTH_DIR /usr/local/go/src/github.com/cesanta/docker_auth
 
 ## copy built binary file and entrypoint file
 COPY --from=build $DOCKER_AUTH_DIR/auth_server/auth_server /usr/local/bin/auth_server
-ADD entrypoint.sh /entrypoint.sh
-ADD ssl_gen.cnf /etc/ssl
-RUN chmod +x /entrypoint.sh
 
 ## expose port
 EXPOSE 5001
 
 ## run service
-CMD ["/entrypoint.sh"]
+CMD ["auth_server", "/etc/auth_server/auth.yml"]
