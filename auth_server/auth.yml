@@ -1,11 +1,11 @@
 server:
   addr: ":5001"
-  certificate: "/auth_server/ssl/certificate.crt"
-  key: "/auth_server/ssl/certificate.key"
 
 token:
   issuer: "Acme auth server"  # Must match issuer in the Registry config.
   expiration: 900
+  certificate: "/etc/ssl/auth_server/certificate.crt"
+  key: "/etc/ssl/auth_server/private.key"
 
 users:
   # Password is specified as a BCrypt hash. Use `htpasswd -nB USERNAME` to generate.

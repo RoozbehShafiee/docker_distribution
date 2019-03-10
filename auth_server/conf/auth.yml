@@ -1,11 +1,11 @@
 server:
   addr: ":5001"
-  certificate: "/etc/auth_server/ssl/certs/auth.example.tld.crt"
-  key: "/etc/auth_server/ssl/private/auth.example.tld.key"
 
 token:
   issuer: "ACME Auth Server"
   expiration: 900
+  certificate: "/etc/auth_server/ssl/certificate.crt"
+  key: "/etc/auth_server/ssl/private.key"
 
 users:
   # Password is specified as a BCrypt hash. Use `htpasswd -nB USERNAME` to generate.

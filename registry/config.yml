@@ -11,7 +11,7 @@ http:
 
 auth:
   token:
-    realm: https://auth.registry.example.tld/auth
-    service: registry.example.tld:5000
+    realm: https://auth.example.tld/auth
+    service: "Docker Registry"
     issuer: "ACME Auth Server"
-    rootcertbundle: /etc/docker/registry/ssl/certs/auth.example.tld.crt
+    rootcertbundle: /etc/ssl/auth_server/certificate.crt

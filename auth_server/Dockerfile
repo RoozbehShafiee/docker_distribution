@@ -44,12 +44,14 @@ FROM alpine:latest
 ## environment variables
 ENV DOCKER_AUTH_DIR /usr/local/go/src/github.com/cesanta/docker_auth
 
-## copy built binary file
+## copy built binary file and entrypoint file
 COPY --from=build $DOCKER_AUTH_DIR/auth_server/auth_server /usr/local/bin/auth_server
+ADD entrypoint.sh /entrypoint.sh
+ADD ssl_gen.cnf /etc/ssl
+RUN chmod +x /entrypoint.sh
 
 ## expose port
 EXPOSE 5001
 
 ## run service
-ENTRYPOINT ["auth_server"]
-CMD ["/etc/auth_server/auth.yml"]
+CMD ["/entrypoint.sh"]

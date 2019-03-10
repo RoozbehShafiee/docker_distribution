@@ -9,39 +9,32 @@ services:
     container_name: traefik
     hostname: traefik
     restart: unless-stopped
+    command:
+      - "--api"
+      - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
+      - "--entrypoints=Name:https Address::443 TLS"
+      - "--defaultentrypoints=http,https"
+      - "--acme"
+      - "--acme.storage=/etc/traefik/acme/acme.json"
+      - "--acme.entryPoint=https"
+      - "--acme.httpChallenge.entryPoint=http"
+      - "--acme.onHostRule=true"
+      - "--acme.onDemand=false"
+      - "--acme.email=email@example.tld"
+      - "--docker"
+      - "--docker.watch"
     volumes:
-      - ./conf/traefik/traefik.toml:/etc/traefik/traefik.toml
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - acme_certs:/etc/traefik/acme
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
     labels:
-      - "traefik.frontend.rule=Host:traefik.example.tld"
+      - "traefik.frontend.rule=Host:example.tld"
       - "traefik.frontend.headers.SSLRedirect=true"
       - "traefik.port=8080"
-  certdumper:
-    build: ./certdumper
-    image: "certdumper:20190309"
-    container_name: certdumper
-    hostname: certdumper
-    restart: unless-stopped
-    volumes:
-      - acme_certs:/etc/traefik/acme
-  registry:
-    image: registry:2
-    container_name: registry
-    hostname: registry
-    restart: unless-stopped
-    volumes:
-      - registry:/var/lib/registry
-      - acme_certs:/etc/docker/registry/ssl
-      - ./conf/registry/config.yml:/etc/docker/registry/config.yml
-    labels:
-      - "traefik.frontend.rule=Host:registry.example.tld"
-      - "traefik.port=5000"
-      - "traefik.enable=true"
+    depends_on:
+      - certdumper
   auth_server:
     build: ./auth_server
     image: "auth_server:20190309"
@@ -49,12 +42,28 @@ services:
     hostname: auth_server
     restart: unless-stopped
     volumes:
-      - acme_certs:/etc/auth_server/ssl/
-      - ./conf/auth_server/auth.yml:/etc/auth_server/auth.yml
+      - certs:/etc/auth_server/ssl
+      - /home/ec2-user/docker_distribution/auth_server/conf/auth.yml:/etc/auth_server/auth.yml
+      - /home/ec2-user/docker_distribution/auth_server/conf/ssl_gen.cnf:/etc/ssl/ssl_gen.cnf
     labels:
-      - "traefik.frontend.rule=Host:auth.registry.example.tld"
+      - "traefik.frontend.rule=Host:auth.example.tld"
       - "traefik.port=5001"
       - "traefik.enable=true"
+  registry:
+    image: registry:2
+    container_name: registry
+    hostname: registry
+    restart: unless-stopped
+    volumes:
+      - registry:/var/lib/registry
+      - certs:/etc/docker/registry/ssl
+      - /home/ec2-user/docker_distribution/registry/config.yml:/etc/docker/registry/config.yml
+    labels:
+      - "traefik.frontend.rule=Host:example.tld"
+      - "traefik.port=5000"
+      - "traefik.enable=true"
+    depends_on:
+      - auth_server
 volumes:
-  acme_certs:
+  certs:
   registry:
