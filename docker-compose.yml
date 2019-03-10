@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
     volumes:
       - /home/ec2-user/docker_distribution/volumes/ssl/:/etc/auth_server/ssl
-      - /home/ec2-user/docker_distribution/auth_server/conf/auth.yml:/etc/auth_server/auth.yml
+      - /home/ec2-user/docker_distribution/volumes/auth_server/auth.yml:/etc/auth_server/auth.yml
     labels:
       - "traefik.frontend.rule=Host:auth.example.tld"
       - "traefik.port=5001"
@@ -54,7 +54,7 @@ services:
     volumes:
       - registry:/var/lib/registry
       - /home/ec2-user/docker_distribution/volumes/ssl/:/etc/docker/registry/ssl
-      - /home/ec2-user/docker_distribution/registry/config.yml:/etc/docker/registry/config.yml
+      - /home/ec2-user/docker_distribution/volumes/registry/config.yml:/etc/docker/registry/config.yml
     labels:
       - "traefik.frontend.rule=Host:example.tld"
       - "traefik.port=5000"
