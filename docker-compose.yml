@@ -50,7 +50,7 @@ services:
     restart: unless-stopped
     volumes:
       - acme_certs:/etc/auth_server/ssl/
-      - ./conf/auth_server/auth.yml:/auth_server/auth.yml
+      - ./conf/auth_server/auth.yml:/etc/auth_server/auth.yml
     labels:
       - "traefik.frontend.rule=Host:auth.registry.example.tld"
       - "traefik.port=5001"
