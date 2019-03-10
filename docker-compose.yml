@@ -9,30 +9,12 @@ services:
     container_name: traefik
     hostname: traefik
     restart: unless-stopped
-    command:
-      - "--api"
-      - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
-      - "--entrypoints=Name:https Address::443 TLS"
-      - "--defaultentrypoints=http,https"
-      - "--acme"
-      - "--acme.storage=/etc/traefik/acme/acme.json"
-      - "--acme.entryPoint=https"
-      - "--acme.httpChallenge.entryPoint=http"
-      - "--acme.onHostRule=true"
-      - "--acme.onDemand=false"
-      - "--acme.email=email@example.tld"
-      - "--docker"
-      - "--docker.watch"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/ec2-user/docker_distribution/volumes/traefik/traefik.toml:/etc/traefik/traefik.toml
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
-    labels:
-      - "traefik.frontend.rule=Host:example.tld"
-      - "traefik.frontend.headers.SSLRedirect=true"
-      - "traefik.port=8080"
   auth_server:
     build: ./auth_server
     image: "auth_server:20190309"

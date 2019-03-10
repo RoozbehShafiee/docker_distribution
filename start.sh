@@ -5,9 +5,10 @@ read DOMAIN
 echo "Enter the email address you want to Let's Encrypt ssl certificates issue for:"
 read EMAIL
 
-sed -i "s|email@example.tld|${EMAIL}|g" ./docker-compose.yml
+sed -i "s|email@example.tld|${EMAIL}|g" ./volumes/traefik/traefik.toml
+sed -i "s|example.tld|${DOMAIN}|g" ./volumes/traefik/traefik.toml
 sed -i "s|example.tld|${DOMAIN}|g" ./docker-compose.yml
-sed -i "s|example.tld|${DOMAIN}|g" ./registry/config.yml
+sed -i "s|example.tld|${DOMAIN}|g" ./volumes/registry/config.yml
 
 if [ ! -f ./volumes/ssl/certificate.crt ]
 then
